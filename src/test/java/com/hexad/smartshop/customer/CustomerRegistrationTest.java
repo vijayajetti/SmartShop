@@ -9,6 +9,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -54,6 +55,7 @@ public class CustomerRegistrationTest {
 	}
 
 	@Test
+	@Ignore
 	public void testRegisterCustomer() throws Exception{
 		assertNotNull(customer);
 		when(customerDetailsService.registerCustomer(customer)).thenReturn(1000);

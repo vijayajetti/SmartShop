@@ -45,7 +45,7 @@ public class Address implements Serializable {
 	@NotEmpty(message = "{NotEmpty.address.pin}")
 	private String pin;
 
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Customer.class)
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Customer.class)
 	@JoinColumn(name = "CUSTOMER_ID", nullable = false, updatable = true)
 	private Customer customer;
 

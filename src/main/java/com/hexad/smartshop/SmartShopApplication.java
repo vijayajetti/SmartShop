@@ -10,8 +10,14 @@ import com.hexad.smartshop.customer.CustomerRegistration;
 public class SmartShopApplication {
 
 	public static void main(String[] args) throws Exception {
+		
 		ApplicationContext context = SpringApplication.run(SmartShopApplication.class, args);
-		CustomerRegistration registeredCustomer = context.getBean(CustomerRegistration.class);
-		registeredCustomer.getCustomerById(7);
+		CustomerRegistration customerInit = context.getBean(CustomerRegistration.class);
+		/*** Uncomment below for new Customer Registration*/
+//		customerInit.registerCustomer(CustTestData.getCustomer());
+		/*** Uncomment below to update the existing Customer details*/
+//		customerInit.updateCustomer(CustTestData.getUpdateCustomer());
+		customerInit.getCustomerById(CustTestData.CUSTOMER_GET_ID);
+		SpringApplication.exit(context, () -> 0);
 	}
 }

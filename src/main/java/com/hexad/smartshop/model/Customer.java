@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -54,12 +55,18 @@ public class Customer implements Serializable {
 	private String password;
 	
 //	@NotEmpty(message="{NotEmpty.customer.addresses}")
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Address.class)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Address.class)
 	private List<Address> addresses =new ArrayList<>();
 
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "REGISTRATION_DATE")
 	private Date dateOfRegistration;
+	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Address.class)
+	private List<Order> listOfOrders = new ArrayList<Order>();
+	
+	@OneToOne(mappedBy="customer",fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Cart.class)
+	private Cart cart;
 
 	
 	public Customer() {
@@ -126,6 +133,22 @@ public class Customer implements Serializable {
 	public void setDateOfRegistration(Date dateOfRegistration) {
 		this.dateOfRegistration = dateOfRegistration;
 	}
+	
+	public List<Order> getListOfOrders() {
+		return listOfOrders;
+	}
+
+	public void setListOfOrders(List<Order> listOfOrders) {
+		this.listOfOrders = listOfOrders;
+	}
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
 
 	public void addAddress(Address address) {
 		addresses.add(address);
@@ -135,5 +158,10 @@ public class Customer implements Serializable {
 	public void removeAddress(Address address) {
 		addresses.remove(address);
 		address.setCustomer(null);
+	}
+	
+	public void addOrder(Order order) {
+		listOfOrders.add(order);
+		order.setCustomer(this);
 	}
 }
