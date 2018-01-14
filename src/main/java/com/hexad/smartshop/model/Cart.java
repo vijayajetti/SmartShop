@@ -1,6 +1,5 @@
 package com.hexad.smartshop.model;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +28,6 @@ public class Cart implements java.io.Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long cartId;
 
-	@Column(name = "CART_PRICE", nullable = false, precision = 10)
-	private BigDecimal cartPrice;
-
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Product.class)
 	private List<Product> productList = new ArrayList<Product>();
 
@@ -42,14 +38,12 @@ public class Cart implements java.io.Serializable {
 	public Cart() {
 	}
 
-	public Cart(Customer customer, BigDecimal cartPrice) {
+	public Cart(Customer customer) {
 		this.customer = customer;
-		this.cartPrice = cartPrice;
 	}
 
-	public Cart(Customer customer, BigDecimal cartPrice, List<Product> productList) {
+	public Cart(Customer customer, List<Product> productList) {
 		this.customer = customer;
-		this.cartPrice = cartPrice;
 		this.productList = productList;
 	}
 
@@ -59,14 +53,6 @@ public class Cart implements java.io.Serializable {
 
 	public void setIdCart(Long cartId) {
 		this.cartId = cartId;
-	}
-
-	public BigDecimal getCartPrice() {
-		return cartPrice;
-	}
-
-	public void setCartPrice(BigDecimal cartPrice) {
-		this.cartPrice = cartPrice;
 	}
 
 	public List<Product> getProductList() {
@@ -95,12 +81,12 @@ public class Cart implements java.io.Serializable {
 		product.setCart(null);
 	}
 
-	public BigDecimal calculateTotal() {
+	/*public BigDecimal calculateTotal() {
 		BigDecimal totalProductsPrice = BigDecimal.ZERO;
 		for (Product product : this.getProductList()) {
 			totalProductsPrice.add(product.calculateProductPirce());
 		}
 		return totalProductsPrice;
 	}
-
+*/
 }

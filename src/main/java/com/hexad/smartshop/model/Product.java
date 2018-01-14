@@ -5,13 +5,10 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name = "PRODCUT_DETAILS")
@@ -21,35 +18,42 @@ public class Product implements java.io.Serializable {
 
 	@Id
 	@Column(name = "PRODUCT_ID", unique = true, nullable = false)
-	@TableGenerator(name = "TABLE_GEN", table = "CUST_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "PRODUCT_SEQ_NEXT_VAL", initialValue = 100, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+//	@TableGenerator(name = "TABLE_GEN", table = "CUST_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "PRODUCT_SEQ_NEXT_VAL", initialValue = 100, allocationSize = 1)
+//	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long productId;
 
 	@Column(name = "PRODUCT_NAME", length = 100)
 	private String productName;
 
-	@Column(name = "PRICE", nullable = false, precision = 10)
-	private BigDecimal price;
+	@Column(name = "UNIT_PRICE", nullable = false, precision = 10)
+	private BigDecimal unitPrice;
 
 	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Cart.class)
 	@JoinColumn(name = "CART_ID", nullable = false, updatable = true)
 	private Cart cart;
 
 	@Column(name = "QUANTITY")
-	private Integer items ;
+	private int items;
 
 	public Product() {
 	}
 
-	public Product(String productName, BigDecimal price) {
-		this.productName = productName;
-		this.price = price;
+	public Product(Long productId, BigDecimal unitPrice) {
+		this.productId = productId;
+		this.unitPrice = unitPrice;
 	}
 
-	public Product(Cart cart, String productName, BigDecimal price, Integer items) {
-		this.cart = cart;
+	public Product(Long productId, String productName, BigDecimal unitPrice) {
+		this.productId = productId;
 		this.productName = productName;
-		this.price = price;
+		this.unitPrice = unitPrice;
+	}
+
+	public Product(Cart cart, Long productId, String productName, BigDecimal unitPrice, Integer items) {
+		this.cart = cart;
+		this.productId = productId;
+		this.productName = productName;
+		this.unitPrice = unitPrice;
 		this.items = items;
 	}
 
@@ -69,12 +73,12 @@ public class Product implements java.io.Serializable {
 		this.productName = productName;
 	}
 
-	public BigDecimal getPrice() {
-		return price;
+	public BigDecimal getUnitPrice() {
+		return unitPrice;
 	}
 
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setUnitPrice(BigDecimal unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 
 	public Cart getCart() {
@@ -85,25 +89,26 @@ public class Product implements java.io.Serializable {
 		this.cart = cart;
 	}
 
-	public Integer getItems() {
+	public int getItems() {
 		return items;
 	}
 
-	public void setItems(Integer items) {
+	public void setItems(int items) {
 		this.items = items;
 	}
 
-	public void addItems(Integer item) {
-		this.items++;
+	public void addItems(int item) {
+		this.items = this.items + item;
 	}
 
-	public void removeAddress(Integer item) {
-		this.items--;
+	public void removeItems(int item) {
+		this.items = this.items - item;
 	}
 
 	public BigDecimal calculateProductPirce() {
 		BigDecimal total = BigDecimal.ZERO;
-		total.add(this.price.multiply(new BigDecimal(this.getItems())));
+		if(this.items>0)
+		total = total.add(this.unitPrice.multiply(new BigDecimal(this.items)));
 		return total;
 	}
 

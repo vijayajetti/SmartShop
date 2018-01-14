@@ -6,13 +6,10 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,9 +21,9 @@ public class Order implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ORDER_ID", unique = true, nullable = false)
-	@TableGenerator(name = "TABLE_GEN", table = "CUST_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "ORDER_SEQ_NEXT_VAL", initialValue = 100, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
-	private Long orderId;
+//	@TableGenerator(name = "TABLE_GEN", table = "CUST_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "ORDER_SEQ_NEXT_VAL", initialValue = 100, allocationSize = 1)
+//	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	private String orderId;
 
 	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Customer.class)
 	@JoinColumn(name = "CUSTOMER_ID", nullable = false, updatable = true)
@@ -49,21 +46,30 @@ public class Order implements java.io.Serializable {
 	public Order() {
 	}
 
+	public Order(Customer customer) {
+		this.customer = customer;
+	}
+
 	public Order(Customer customer, Date dateOfOrder, String currentStatus) {
 		this.customer = customer;
 		this.dateOfOrder = dateOfOrder;
 		this.currentStatus = currentStatus;
 	}
 
-	public Order(Customer customer) {
+	public Order(String orderId, Customer customer, Date dateOfOrder, String currentStatus, Date deliveryDate, BigDecimal totalPrice) {
+		this.orderId = orderId;
 		this.customer = customer;
+		this.dateOfOrder = dateOfOrder;
+		this.currentStatus = currentStatus;
+		this.deliveryDate = deliveryDate;
+		this.totalPrice = totalPrice;
 	}
 
-	public Long getOrderId() {
+	public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(Long orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 
@@ -100,6 +106,10 @@ public class Order implements java.io.Serializable {
 	}
 
 	public BigDecimal getTotalPrice() {
+		totalPrice = BigDecimal.ZERO;
+		for (Product product : this.customer.getCart().getProductList()) {
+			totalPrice = totalPrice.add(product.calculateProductPirce());
+		}
 		return totalPrice;
 	}
 
@@ -107,46 +117,62 @@ public class Order implements java.io.Serializable {
 		this.totalPrice = totalPrice;
 	}
 
-	public static class BuilderOrder {
-		
+	public static class OrderBuilder {
+
+		private String orderId;
+
 		private Customer customer;
 
 		private Date dateOfOrder;
 
 		private String currentStatus;
 
-//		private Date deliveryDate;
+		private Date deliveryDate;
 
-//		private BigDecimal totalPrice;
+		private BigDecimal totalPrice;
 
-		public BuilderOrder setCustomer(Customer customer) {
+		public OrderBuilder setOrderId(String orderId) {
+			this.orderId = orderId;
+			return this;
+		}
+
+		public OrderBuilder setCustomer(Customer customer) {
 			this.customer = customer;
 			return this;
 		}
 
-		public BuilderOrder setDateOfOrder(Date dateOfOrder) {
+		public OrderBuilder setDateOfOrder(Date dateOfOrder) {
 			this.dateOfOrder = dateOfOrder;
 			return this;
 		}
 
-		public BuilderOrder setCurrentStatus(String currentStatus) {
+		public OrderBuilder setCurrentStatus(String currentStatus) {
 			this.currentStatus = currentStatus;
 			return this;
 		}
 
-		/*public BuilderOrder setDeliveryDate(Date deliveryDate) {
+		public OrderBuilder setDeliveryDate(Date deliveryDate) {
 			this.deliveryDate = deliveryDate;
 			return this;
 		}
 
-		public BuilderOrder setTotalPrice(BigDecimal totalPrice) {
+		public OrderBuilder setTotalPrice(BigDecimal totalPrice) {
 			this.totalPrice = totalPrice;
 			return this;
-		}*/
+		}
 
 		public Order build() {
-			Order order = new Order(this.customer, this.dateOfOrder, this.currentStatus);
+			Order order = new Order(this.orderId, this.customer, this.dateOfOrder, this.currentStatus, this.deliveryDate, this.totalPrice);
 			return order;
 		}
 	}
+
+	/*public BigDecimal calculateOrderTotalPrice() {
+		BigDecimal totalProductsPrice = BigDecimal.ZERO;
+		for (Product product : this.customer.getCart().getProductList()) {
+			totalProductsPrice = totalProductsPrice.add(product.calculateProductPirce());
+		}
+		this.totalPrice = totalProductsPrice;
+		return totalProductsPrice;
+	}*/
 }

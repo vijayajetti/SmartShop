@@ -1,8 +1,6 @@
 package com.hexad.smartshop.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +22,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.hexad.smartshop.utils.AppUtils;
 
 @Entity
 @Table(name = "CUSTOMER_DETAIL")
@@ -76,7 +76,7 @@ public class Customer implements Serializable {
 		this.customerName = customerName;
 		this.emailId = emailId;
 		this.phoneNumber = phoneNumber;
-		dateOfRegistration = Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+		dateOfRegistration = AppUtils.getCurrentDate();
 	}
 
 	public Integer getCustomerId() {
