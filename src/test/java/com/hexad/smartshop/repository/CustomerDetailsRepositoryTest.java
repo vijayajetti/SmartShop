@@ -1,7 +1,6 @@
 package com.hexad.smartshop.repository;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,16 +18,14 @@ import javax.persistence.Query;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hexad.smartshop.TestUtils;
 import com.hexad.smartshop.constants.ErrorMessageConstants;
+import com.hexad.smartshop.data.CustomerInputConstants;
+import com.hexad.smartshop.data.CustomerInputHelper;
 import com.hexad.smartshop.exception.CustomerException;
 import com.hexad.smartshop.model.Address;
 import com.hexad.smartshop.model.Customer;
@@ -51,9 +47,9 @@ public class CustomerDetailsRepositoryTest {
 	private static Customer customer, updateCustomer;
 
 	@BeforeClass
-	public static void setUpClass() {
-		customer = TestUtils.getCustomer();
-		updateCustomer = TestUtils.getUpdateCustomer();
+	public static void setUpClass() throws Exception {
+		customer = CustomerInputHelper.getCustomerWithId();
+		updateCustomer = CustomerInputHelper.getUpdateCustomer();
 	}
 
 	@Before
@@ -75,14 +71,14 @@ public class CustomerDetailsRepositoryTest {
 	@Test
 	public void testRegisterCustomerThrowsCustomerExceptionIfPhoneNumberAlreadyExist() throws Exception {
 		try {
-		customer.setPhoneNumber(TestUtils.CUSTOMER_CREATION_PHONE_NUMBER);
+		customer.setPhoneNumber(CustomerInputConstants.CUSTOMER_CREATION_PHONE_NUMBER);
 		when(entityManager.createNativeQuery(sql.capture())).thenReturn(query);
 		when(query.getSingleResult()).thenReturn(BigInteger.ONE);
 		customerRepository.registerCustomer(customer);
 		fail();
 		}catch(CustomerException cx) {
-			assertEquals("Verify the Error Code", 0, cx.getErrorCode());
-			assertEquals("Verify the Error Message",ErrorMessageConstants.CUSTOMER_CONFLICT,cx.getErrorMessage());
+			assertEquals("Verify the Error Code", ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_ID, cx.getErrorCode());
+			assertEquals("Verify the Error Message",ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_VALUE,cx.getErrorMessage());
 		}catch(Exception e) {
 			fail();
 		}
@@ -108,14 +104,14 @@ public class CustomerDetailsRepositoryTest {
 	public void testUpdateCustomer() throws Exception {
 		
 		Address addr = new Address();
-		addr.setCustomer(customer);
+		addr.setCustomer(updateCustomer);
 		List<Address> addressList = Arrays.asList(addr);
 		when(entityManager.createQuery(sql.capture())).thenReturn(query);
 		when(query.getResultList()).thenReturn(addressList);
-		Customer cust = customerRepository.updateCustomer(customer);
-        assertEquals("Verify the Customer Id", customer.getCustomerId(), cust.getCustomerId());
-        assertEquals("Verify the Customer Name", customer.getCustomerName(), cust.getCustomerName());
-        assertEquals("Verify the Email Id", customer.getEmailId(), cust.getEmailId());
+		Customer cust = customerRepository.updateCustomer(updateCustomer);
+        assertEquals("Verify the Customer Id", updateCustomer.getCustomerId(), cust.getCustomerId());
+        assertEquals("Verify the Customer Name", updateCustomer.getCustomerName(), cust.getCustomerName());
+        assertEquals("Verify the Email Id", updateCustomer.getEmailId(), cust.getEmailId());
 		verify(entityManager, times(2)).createQuery(sql.capture());
 		verify(query, times(2)).getResultList();
 	}
@@ -127,11 +123,11 @@ public class CustomerDetailsRepositoryTest {
 		List<Address> addressList = Arrays.asList(addr);
 		when(entityManager.createQuery(sql.capture())).thenReturn(query);
 		when(query.getResultList()).thenReturn(addressList);
-		customerRepository.updateCustomer(customer);
+		customerRepository.updateCustomer(updateCustomer);
 		fail();
 		}catch(CustomerException cx) {
-			assertEquals("Verify the Error Code", 0, cx.getErrorCode());
-			assertEquals("Verify the Error Message",ErrorMessageConstants.CUSTOMER_NOT_FOUND,cx.getErrorMessage());
+			assertEquals("Verify the Error Code", ErrorMessageConstants.CUSTOMER_NOT_FOUND_ID, cx.getErrorCode());
+			assertEquals("Verify the Error Message",ErrorMessageConstants.CUSTOMER_NOT_FOUND_VALUE,cx.getErrorMessage());
 		}catch(Exception e) {
 			fail();
 		}

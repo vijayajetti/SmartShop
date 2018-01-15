@@ -13,7 +13,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import com.hexad.smartshop.TestUtils;
+import com.hexad.smartshop.data.CustomerInputConstants;
+import com.hexad.smartshop.data.CustomerInputHelper;
 import com.hexad.smartshop.model.Customer;
 import com.hexad.smartshop.service.ICustomerDetailsService;
 
@@ -30,8 +31,8 @@ public class CustomerRegistrationTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		customer = TestUtils.getCustomer();
-		updateCustomer = TestUtils.getUpdateCustomer();
+		customer = CustomerInputHelper.getCustomerWithId();
+		updateCustomer = CustomerInputHelper.getUpdateCustomer();
 	}
 
 	@Before
@@ -57,20 +58,13 @@ public class CustomerRegistrationTest {
 		assertEquals("Verify the result ", new Integer(1000), customerId);
 		verify(customerDetailsService, times(1)).registerCustomer(customer);
 	}
-	/*@Test
-	public void testRegisterCustomerVerifyCustId() throws Exception{
-		when(customerDetailsService.registerCustomer(customer)).thenReturn(1000);
-		Integer customerId=controller.registerCustomer(customer);
-		assertEquals("Verify result ", new Integer(1000), customerId);
-	}*/
-
 
 	@Test
 	public void testUpdateCustomer() throws Exception{
 		assertNotNull(customer);
 		when(customerDetailsService.updateCustomer(updateCustomer)).thenReturn(updateCustomer);
 		Customer result = controller.updateCustomer(updateCustomer);
-		assertEquals("Verify the data ", TestUtils.CUSTOMER_UDATE_NAME, result.getCustomerName());
+		assertEquals("Verify the data ", CustomerInputConstants.CUSTOMER_UDATE_NAME, result.getCustomerName());
 		assertEquals("Verify the result ", updateCustomer, result);
 		verify(customerDetailsService, times(1)).updateCustomer(updateCustomer);
 	}

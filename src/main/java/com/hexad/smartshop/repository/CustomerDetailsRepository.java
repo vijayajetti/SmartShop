@@ -28,20 +28,26 @@ public class CustomerDetailsRepository implements ICustomerDetailsRepository {
 	@Override
 	public Integer registerCustomer(Customer customer) throws CustomerException {
 		if (isUserExists(customer.getPhoneNumber())) {
-			throw new CustomerException(ErrorMessageConstants.CUSTOMER_CONFLICT);
+			logger.error(ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_ID,new Object[] { customer.getPhoneNumber() });
+			throw new CustomerException(ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_ID,ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_VALUE);
 		}
 		entityManager.persist(customer);
-		logger.info("Customer has been registered sucessfully with Id: " + customer.getCustomerId());
 		return customer.getCustomerId();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Customer getCustomerById(Integer customerId) throws CustomerException {
+		Customer customer = null;
 		String hql = QueryConstants.CUSTOMER_CREATION_HQL_QUERY.concat(customerId.toString());
 		Query query = entityManager.createQuery(hql);
 		List<Address> addressList = (List<Address>) query.getResultList();
-		Customer customer = addressList.get(0).getCustomer();
+		if(addressList!=null) {
+		customer = addressList.get(0).getCustomer();
+		}
+		if(customer!=null) {
+		customer.setAddresses(addressList);
+		}
 		return customer;
 	}
 
@@ -49,7 +55,8 @@ public class CustomerDetailsRepository implements ICustomerDetailsRepository {
 	public Customer updateCustomer(Customer modifiedCustomer) throws CustomerException {
 		Customer customerDetails = getCustomerById(modifiedCustomer.getCustomerId());
 		if (customerDetails == null) {
-			throw new CustomerException(ErrorMessageConstants.CUSTOMER_NOT_FOUND);
+			logger.error(ErrorMessageConstants.CUSTOMER_NOT_FOUND_ID,new Object[] { modifiedCustomer.getCustomerId() });
+			throw new CustomerException(ErrorMessageConstants.CUSTOMER_NOT_FOUND_ID,ErrorMessageConstants.CUSTOMER_NOT_FOUND_VALUE);
 		}
 		customerDetails.setCustomerName(modifiedCustomer.getCustomerName());
 		customerDetails.setPassword(modifiedCustomer.getPassword());

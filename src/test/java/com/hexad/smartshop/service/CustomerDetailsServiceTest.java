@@ -16,7 +16,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hexad.smartshop.TestUtils;
+import com.hexad.smartshop.data.CustomerInputConstants;
+import com.hexad.smartshop.data.CustomerInputHelper;
 import com.hexad.smartshop.model.Customer;
 import com.hexad.smartshop.repository.ICustomerDetailsRepository;
 
@@ -30,16 +31,12 @@ public class CustomerDetailsServiceTest {
 	@Mock
 	private ICustomerDetailsRepository customerRepository;
 
-//	private static Address address1, address2, address3;
-
 	private static Customer customer, updateCustomer;
 
-//	private static List<Address> addressList;
-
 	@BeforeClass
-	public static void setUpClass() {
-		customer = TestUtils.getCustomer();
-		updateCustomer = TestUtils.getUpdateCustomer();
+	public static void setUpClass() throws Exception{
+		customer = CustomerInputHelper.getCustomerWithId();
+		updateCustomer = CustomerInputHelper.getUpdateCustomer();
 	}
 
 	@Before
@@ -56,20 +53,12 @@ public class CustomerDetailsServiceTest {
 		verify(customerRepository, times(1)).registerCustomer(customer);
 	}
 
-	/*@Test
-	public void testRegisterCustomerVerifyCustId() throws Exception {
-		assertNotNull(customer);
-		when(customerRepository.registerCustomer(customer)).thenReturn(1000);
-		Integer result = customerDetailsService.registerCustomer(customer);
-		assertEquals(new Integer(1000), result);
-	}*/
-
 	@Test
 	public void testUpdateCustomer() throws Exception {
 		assertNotNull(updateCustomer);
 		when(customerRepository.updateCustomer(updateCustomer)).thenReturn(updateCustomer);
 		Customer result = customerDetailsService.updateCustomer(updateCustomer);
-		assertEquals("Verify data ", TestUtils.CUSTOMER_UPDATE_EMAIL_ID, result.getEmailId());
+		assertEquals("Verify data ", CustomerInputConstants.CUSTOMER_UPDATE_EMAIL_ID, result.getEmailId());
 		assertEquals("Verify result ", updateCustomer, result);
 		verify(customerRepository, times(1)).updateCustomer(updateCustomer);
 

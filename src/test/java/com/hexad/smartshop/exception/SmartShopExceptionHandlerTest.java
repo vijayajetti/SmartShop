@@ -6,8 +6,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import com.hexad.smartshop.constants.ErrorMessageConstants;
 
 public class SmartShopExceptionHandlerTest {
 	
@@ -21,25 +21,25 @@ public class SmartShopExceptionHandlerTest {
 	
 	@Test
 	public void testExceptionUpdateCustomerHandler() {
-		ResponseEntity<ErrorResponse> errorResponse = SmartShopExceptionHandler.exceptionUpdateCustomerHandler(new Exception());
-		assertEquals("Verify the Status Code",HttpStatus.NOT_FOUND, errorResponse.getStatusCode());
-		assertEquals("Verify the Error Code", HttpStatus.NOT_FOUND.value(), errorResponse.getBody().getErrorCode());
+		IErrorResponse errorResponse = SmartShopExceptionHandler.exceptionUpdateCustomerHandler(new SmartshopBaseException(ErrorMessageConstants.CUSTOMER_NOT_FOUND_ID, ErrorMessageConstants.CUSTOMER_NOT_FOUND_VALUE));
+		assertEquals("Verify the Error Code",ErrorMessageConstants.CUSTOMER_NOT_FOUND_ID, errorResponse.getErrorCode());
+		assertEquals("Verify the Error Message", ErrorMessageConstants.CUSTOMER_NOT_FOUND_VALUE, errorResponse.getErrorMessage());
 
 	}
 	
-	@Test
+	@Test()
 	public void testExceptionHandler() {
-		ResponseEntity<ErrorResponse> errorResponse = SmartShopExceptionHandler.exceptionHandler(new Exception());
-		assertEquals("Verify the Status Code", HttpStatus.BAD_REQUEST, errorResponse.getStatusCode());
-		assertEquals("Verify the Error Code", HttpStatus.BAD_REQUEST.value(), errorResponse.getBody().getErrorCode());
+		IErrorResponse errorResponse = SmartShopExceptionHandler.exceptionHandler(new Exception(ErrorMessageConstants.APP_GENERIC_ERROR_ID));
+		assertEquals("Verify the Error Code", ErrorMessageConstants.APP_GENERIC_ERROR_ID, errorResponse.getErrorCode());
+		assertEquals("Verify the Error Message", ErrorMessageConstants.APP_GENERIC_ERROR_VALUE, errorResponse.getErrorMessage());
 
 	}
 	
 	@Test
 	public void testExceptionCustomerHandler() {
-		ResponseEntity<ErrorResponse> errorResponse = SmartShopExceptionHandler.exceptionCustomerHandler(new Exception());
-		assertEquals("Verify the Status Code", HttpStatus.CONFLICT, errorResponse.getStatusCode());
-		assertEquals("Verify the Error Code", HttpStatus.CONFLICT.value(), errorResponse.getBody().getErrorCode());
+		IErrorResponse errorResponse = SmartShopExceptionHandler.exceptionCustomerHandler(new CustomerException(ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_ID, ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_VALUE));
+		assertEquals("Verify the Error Code", ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_ID, errorResponse.getErrorCode());
+		assertEquals("Verify the Error Message", ErrorMessageConstants.CUSTOMER_ALREADY_REGESTERED_VALUE, errorResponse.getErrorMessage());
 
 	}
 

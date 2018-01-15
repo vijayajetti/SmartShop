@@ -23,7 +23,6 @@ public class CustomerRegistration {
 		String methodName = CLASS_NAME + ".getCustomerById()";
 		logger.info(methodName);
 		Customer customer = customerService.getCustomerById(customerId);
-		logger.info("Customer Id:" + customer.getCustomerId());
 		logger.info("Customer Name:" + customer.getCustomerName());
 		logger.info("Customer Addresses:" + customer.getAddresses().size());
 		return customer;
