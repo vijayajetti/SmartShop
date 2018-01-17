@@ -1,24 +1,36 @@
 package com.hexad.smartshop.exception;
 
-public class ErrorResponse {
+public class ErrorResponse implements IErrorResponse {
 
-	private int errorCode;
+	protected String errorCode;
 
-	private String message;
+	protected String errorMessage;
+	
+	protected Object[] args;
 
-	public int getErrorCode() {
+	public String getErrorCode() {
 		return errorCode;
 	}
 
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
+
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public void setArgs(Object[] args) {
+		this.args = args;
+	}
+	
+
 }

@@ -54,7 +54,6 @@ public class Customer implements Serializable {
 	@NotEmpty(message="{NotEmpty.customer.password}")
 	private String password;
 	
-//	@NotEmpty(message="{NotEmpty.customer.addresses}")
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Address.class)
 	private List<Address> addresses =new ArrayList<>();
 

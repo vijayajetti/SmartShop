@@ -25,7 +25,7 @@ public class Product implements java.io.Serializable {
 	@Column(name = "PRODUCT_NAME", length = 100)
 	private String productName;
 
-	@Column(name = "UNIT_PRICE", nullable = false, precision = 10)
+	@Column(name = "UNIT_PRICE", nullable = false, precision = 10, scale=4)
 	private BigDecimal unitPrice;
 
 	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Cart.class)
@@ -43,13 +43,14 @@ public class Product implements java.io.Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public Product(Long productId, String productName, BigDecimal unitPrice) {
+	public Product(Long productId, String productName, BigDecimal unitPrice,int items) {
 		this.productId = productId;
 		this.productName = productName;
 		this.unitPrice = unitPrice;
+		this.items = items;
 	}
 
-	public Product(Cart cart, Long productId, String productName, BigDecimal unitPrice, Integer items) {
+	public Product(Cart cart, Long productId, String productName, BigDecimal unitPrice, int items) {
 		this.cart = cart;
 		this.productId = productId;
 		this.productName = productName;
@@ -95,14 +96,6 @@ public class Product implements java.io.Serializable {
 
 	public void setItems(int items) {
 		this.items = items;
-	}
-
-	public void addItems(int item) {
-		this.items = this.items + item;
-	}
-
-	public void removeItems(int item) {
-		this.items = this.items - item;
 	}
 
 	public BigDecimal calculateProductPirce() {

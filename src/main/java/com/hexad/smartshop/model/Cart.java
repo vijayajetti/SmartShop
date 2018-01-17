@@ -1,5 +1,6 @@
 package com.hexad.smartshop.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "cart")
@@ -34,6 +36,9 @@ public class Cart implements java.io.Serializable {
 	@JoinColumn(name = "CUSTOMER_ID")
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Customer.class)
 	private Customer customer;
+	
+	@Transient
+	private BigDecimal totalPrice;
 
 	public Cart() {
 	}
@@ -81,12 +86,11 @@ public class Cart implements java.io.Serializable {
 		product.setCart(null);
 	}
 
-	/*public BigDecimal calculateTotal() {
-		BigDecimal totalProductsPrice = BigDecimal.ZERO;
-		for (Product product : this.getProductList()) {
-			totalProductsPrice.add(product.calculateProductPirce());
+	public BigDecimal getTotalPrice() {
+		totalPrice = BigDecimal.ZERO;
+		for (Product product : this.customer.getCart().getProductList()) {
+			totalPrice = totalPrice.add(product.calculateProductPirce());
 		}
-		return totalProductsPrice;
+		return totalPrice;
 	}
-*/
 }

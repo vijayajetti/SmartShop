@@ -106,10 +106,6 @@ public class Order implements java.io.Serializable {
 	}
 
 	public BigDecimal getTotalPrice() {
-		totalPrice = BigDecimal.ZERO;
-		for (Product product : this.customer.getCart().getProductList()) {
-			totalPrice = totalPrice.add(product.calculateProductPirce());
-		}
 		return totalPrice;
 	}
 
@@ -166,13 +162,4 @@ public class Order implements java.io.Serializable {
 			return order;
 		}
 	}
-
-	/*public BigDecimal calculateOrderTotalPrice() {
-		BigDecimal totalProductsPrice = BigDecimal.ZERO;
-		for (Product product : this.customer.getCart().getProductList()) {
-			totalProductsPrice = totalProductsPrice.add(product.calculateProductPirce());
-		}
-		this.totalPrice = totalProductsPrice;
-		return totalProductsPrice;
-	}*/
 }
