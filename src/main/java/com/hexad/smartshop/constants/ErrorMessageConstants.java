@@ -17,6 +17,8 @@ public class ErrorMessageConstants {
 	public static final String ORDER_CREATING_ERROR_ID = "ORDER_CREATING_ERROR";
 	public static final String ORDER_SENDING_ERROR_ID = "ORDER_SENDING_ERROR";
 	public static final String APP_GENERIC_ERROR_ID = "APP_GENERIC_ERROR";
+	public static final String PRODUCT_ADD_ERROR_ID = "PRODUCT_COULD_NOT_ADD";
+	
 	
 	public static final String CUSTOMER_NOT_FOUND_VALUE = "Customer ID couldn't find.";
 	public static final String CUSTOMER_ALREADY_REGESTERED_VALUE = "Customer ID Already Registered";
@@ -26,5 +28,6 @@ public class ErrorMessageConstants {
 	public static final String ORDER_CREATING_ERROR_VALUE = "Error while creating Order";
 	public static final String ORDER_SENDING_ERROR_VALUE = "Error while sending Order to MQ";
 	public static final String APP_GENERIC_ERROR_VALUE = "Internal Server error";
+	public static final String PRODUCT_ADD_ERROR_VALUE = "Error while adding product";
 
 }

@@ -88,7 +88,7 @@ public class Cart implements java.io.Serializable {
 
 	public BigDecimal getTotalPrice() {
 		totalPrice = BigDecimal.ZERO;
-		for (Product product : this.customer.getCart().getProductList()) {
+		for (Product product : this.productList) {
 			totalPrice = totalPrice.add(product.calculateProductPirce());
 		}
 		return totalPrice;

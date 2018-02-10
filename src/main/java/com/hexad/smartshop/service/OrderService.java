@@ -1,7 +1,5 @@
 package com.hexad.smartshop.service;
 
-import java.math.BigDecimal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +33,7 @@ public class OrderService implements IOrderService {
 		String methodName = CLASS_NAME + ".makeAnOrder()";
 		SmartShopLoggingHelper.debug(methodName, ErrorMessageConstants.START_METHOD);
 		Order order=null;
-		if (customer.getCart().getTotalPrice().compareTo(BigDecimal.ZERO) <= 0) {
+		if (customer.getCart() == null || customer.getCart().getProductList() == null || customer.getCart().getProductList().size() <= 0) {
 			SmartShopLoggingHelper.severe(methodName, ErrorMessageConstants.ORDER_AMOUNT_ZERO, new Object[] {});
 			throw new IllegalArgumentException(ErrorMessageConstants.ORDER_AMOUNT_ZERO);
 		}
